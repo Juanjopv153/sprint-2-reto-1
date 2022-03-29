@@ -7,4 +7,5 @@ background-color: hsl(180, 29%, 50%);
     content: url('https://res.cloudinary.com/nohay/image/upload/v1648367425/sprintDos/RetoUno/rzpqbhp9thgn336kunfw.svg');
 }
 `
+
 export {HeaderImage}

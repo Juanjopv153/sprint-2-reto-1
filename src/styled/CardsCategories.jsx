@@ -16,7 +16,15 @@ justify-content: center;
         background-color:hsl(180, 29%, 50%);
         color: hsl(180, 31%, 95%);
     }
+    
+
 }
+
+@media screen and (max-width:560px) {
+    justify-content: start;
+    flex-wrap: wrap;
+    }
+
 `
 
 

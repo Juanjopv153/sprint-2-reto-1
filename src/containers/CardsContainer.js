@@ -3,20 +3,24 @@ import { url } from './../helpers/url'
 import axios from 'axios'
 import Cards from './../components/Cards'
 import CardsCategories from './../components/CardsCategories'
+import useCategorie from '../hooks/useCategorie'
 import { DivCard } from './../styled/Card'
 const CardsContainer = () => {
+    const dataCat = useCategorie()
     const [data, setData] = useState([])
     const [dataCategories, setCategories] = useState([])
+    const [printDatos, setPrintDatos] = useState([])
     useEffect(() => {
-        localStorage.setItem('categories', JSON.stringify(dataCategories))
-        getData()
+        dataCat.dataCategorie = dataCategories
+        localStorage.setItem('categories', JSON.stringify(dataCat.dataCategorie))
+        showData()
     }, [dataCategories])
-
 
     const getData = () => {
         axios.get(url)
             .then(resp => {
                 setData(resp.data)
+                setPrintDatos(resp.data)
             })
             .catch(error => {
                 console.error(error);
@@ -49,18 +53,59 @@ const CardsContainer = () => {
         }
     })
 
+    const showData = ()=>{
+        if(dataCategories.length === 0){
+            getData()
+            dataCat.state = false
+            console.log(dataCat);
+        }
+        else{
 
+            dataCat.state = true
+            console.log(dataCat);
+            let dataXDD = []
+            let filterData = []
+            let poto = []
+            data.forEach(elemData=>{
+                let dataXD = {}
+                let dat = []
+                dataCategories.forEach(elemCat=>{
+                   dat.push(elemData.categories.some(e=>e.includes(elemCat)))
+                    dataXD = {
+                        data : elemData,
+                        state : dat
+                    }
+                })
+                dataXDD.push(dataXD)
+        
+            })
 
+          dataXDD.forEach(elem=>{
+              elem.state.forEach(elemMap=>{
+                  if(elemMap === false){
+                      elem.state = false
+                  }
+              })            
+          })
+          poto = dataXDD.filter(elem=>{
+              return elem.state !== false
+          })
+          poto.forEach(elem=>{
+              filterData.push(elem.data)
+          })
+          setPrintDatos(filterData)
+            
+        }
+    }
     return (
 
         <div>
             {
-            data.map(({ id, url, RangeName, name, tickets, timeSigning, time, countryJob, categories, newSection }) => {
+            printDatos.map(({ id, url, RangeName, name, tickets, timeSigning, time, countryJob, categories, newSection }) => {
                 return (
                 <DivCard key = { id } >
-                    <div className = { newSection ? 'newSection' : 'newSectionFalse' } >
-                    </div> <div className = 'section1' >
-
+                    <div className = { newSection ? 'newSection' : 'newSectionFalse' } ></div> 
+                    <div className = 'section1' >
                     <img src = { url }
                     alt = "user" />
                     <Cards name = { name }
@@ -75,7 +120,8 @@ const CardsContainer = () => {
                         })
                     }/>
                     </div>
-                    <CardsCategories categorie = {
+                    <div className='barrita'></div>
+                    <CardsCategories classname="cardsCategorie" categorie = {
                         categories.map(categorie => {
                             return ( 
                             <span className = 'spanCards'
@@ -86,7 +132,8 @@ const CardsContainer = () => {
                             )
                         })
                     }
-                    /> </DivCard>
+                    /> 
+                    </DivCard>
                 )
             })
         } </div>
