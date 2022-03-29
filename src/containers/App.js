@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+// import Prueba from '../components/Prueba'
 import { HeaderImage } from '../styled/App'
 import CardsContainer from './CardsContainer'
 
